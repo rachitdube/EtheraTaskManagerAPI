@@ -1,7 +1,7 @@
 import { pool } from "../config/db.js";
 import { validationResult } from "express-validator";
 
-// Create a task (admin only)
+// Creating a task (only admin)
 const createTask = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
@@ -107,9 +107,7 @@ const getTask = async (req, res, next) => {
   }
 };
 
-// Update a task
-// Admin: can update all fields
-// Member: can only update status of tasks assigned to them
+// Updating a task, in this member can update the status, but admin can updat all
 const updateTask = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
@@ -149,7 +147,7 @@ const updateTask = async (req, res, next) => {
       return res.json(result.rows[0]);
     }
 
-    // Admin can update all fields
+    // admin can update all fields
     const { title, description, due_date, priority, status, assigned_to } =
       req.body;
 
@@ -184,7 +182,7 @@ const updateTask = async (req, res, next) => {
   }
 };
 
-// Delete a task (admin only)
+// Deleting a task (admin only)
 const deleteTask = async (req, res, next) => {
   const { taskId, projectId } = req.params;
   try {

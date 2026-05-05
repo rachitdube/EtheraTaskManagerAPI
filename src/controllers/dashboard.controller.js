@@ -55,7 +55,7 @@ const getProjectDashboard = async (req, res, next) => {
   }
 };
 
-// Global dashboard — all projects the user is part of
+// Global dashboard for the user which he is part of
 const getMyDashboard = async (req, res, next) => {
   const userId = req.user.id;
 

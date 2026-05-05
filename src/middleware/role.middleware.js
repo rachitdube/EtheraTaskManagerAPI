@@ -28,7 +28,7 @@ const requireAdmin = async (req, res, next) => {
   }
 };
 
-// Check if the authenticated user is a member (any role) of the given project
+// Check if the authenticated user is a member of the given project
 const requireMember = async (req, res, next) => {
   const projectId = req.params.projectId || req.body.project_id;
   const userId = req.user.id;

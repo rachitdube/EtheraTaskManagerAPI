@@ -1,7 +1,7 @@
 import { pool } from "../config/db.js";
 import { validationResult } from "express-validator";
 
-// Create a new project — creator becomes admin
+// Creating new poject, the creator wil be the admin for that project
 const createProject = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
@@ -53,16 +53,18 @@ const getMyProjects = async (req, res, next) => {
   }
 };
 
-// Get a single project with its members
+// get single project with its members
 const getProject = async (req, res, next) => {
   const { projectId } = req.params;
+  const userId = req.user.id;
   try {
     const projectResult = await pool.query(
-      `SELECT p.*, u.name AS creator_name
+      `SELECT p.*, u.name AS creator_name, pm_me.role
        FROM projects p
        JOIN users u ON u.id = p.created_by
+       JOIN project_members pm_me ON pm_me.project_id = p.id AND pm_me.user_id = $2
        WHERE p.id = $1`,
-      [projectId],
+      [projectId, userId],
     );
     if (projectResult.rows.length === 0) {
       return res.status(404).json({ message: "Project not found" });
@@ -82,7 +84,7 @@ const getProject = async (req, res, next) => {
   }
 };
 
-// Add a member to a project (admin only)
+// Add a member to a project only admin can
 const addMember = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
@@ -123,7 +125,7 @@ const addMember = async (req, res, next) => {
   }
 };
 
-// Remove a member from a project (admin only)
+// Remove a member from a project
 const removeMember = async (req, res, next) => {
   const { projectId, userId } = req.params;
 
